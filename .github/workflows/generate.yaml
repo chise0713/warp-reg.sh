@@ -25,13 +25,13 @@ jobs:
 
         git fetch
         
-        if git show-ref --quiet refs/heads/release; then
-         echo "'release' branch exists, switching to 'release' branch"
-         git checkout release
+        if git ls-remote --exit-code --heads origin release >/dev/null 2>&1; then
+          echo "'release' branch exists on remote, switching to 'release' branch"
+          git checkout release
         else
-         echo "'release' branch does not exist, creating and switching to 'release' branch"
-         git checkout --orphan release
-         git rm -rf .
+          echo "'release' branch does not exist on remote, creating and switching to 'release' branch"
+          git checkout --orphan release
+          git rm -rf .
         fi
         
         date >> /tmp/date.ini && date=$(sed "s# #_#g" /tmp/date.ini)
