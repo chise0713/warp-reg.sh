@@ -1,6 +1,7 @@
 # warp-reg.sh
 [Upstream URL](https://github.com/badafans/warp-reg)  
-Ready-made config files in [release Branch](https://github.com/KoinuDayo/warp-reg.sh/tree/release)
+Ready-made config files in [release branch](https://github.com/KoinuDayo/warp-reg.sh/tree/release)  
+[![Generate Cloudflare WARP wireguard config for Xray](https://github.com/KoinuDayo/warp-reg.sh/actions/workflows/generate.yaml/badge.svg)](https://github.com/KoinuDayo/warp-reg.sh/actions/workflows/generate.yaml)
 # How To Use?
   1. Put your `config.json` in the directory  
   2. Add a `wireguard` in your `outbound`.  
