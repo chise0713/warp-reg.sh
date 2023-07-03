@@ -1,0 +1,19 @@
+name: Delete Branch
+
+on:
+  workflow_dispatch:
+  schedule: 
+    - cron:  '0 */1 * * *'
+
+jobs:
+  build:
+    name: Delete Branch
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Delete branch
+      run: |
+        git push --delete origin release
