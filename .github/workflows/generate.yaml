@@ -3,8 +3,12 @@ name: Generate Cloudflare WARP wireguard config for Xray
 on:
   workflow_dispatch:
   schedule: 
-    - cron:  '*/5 * * * *'
-
+    - cron:  '*/6 * * * *'
+  workflow_run:
+    workflows: ["Delete Branch"]
+    types:
+      - completed
+      
 jobs:
   build:
     name: Generate
