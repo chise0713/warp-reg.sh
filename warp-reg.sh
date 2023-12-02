@@ -1,33 +1,31 @@
-#!/bin/bash
+#!/usr/bin/bash
+set -e
+ERROR="\e[1;31m"
+WARN="\e[93m"
+END="\e[0m"
 
-# Download warp-reg binary
-curl -sLo /tmp/warp-reg "https://github.com/badafans/warp-reg/releases/download/v1.0/main-linux-amd64"
-chmod +x /tmp/warp-reg
+reg() {
+    public_der=$(openssl genpkey -algorithm X25519 -outform der | tr '\0' '\254')
+    public_key=$(echo "$public_der" | tr '\254' '\0' | tail -c 32 | base64)
+    private_key=$(echo "$public_der" | openssl pkey -inform der -pubout -outform der | tail -c 32 | base64)
+    curl -X POST 'https://api.cloudflareclient.com/v0a2158/reg' -sL --tlsv1.3 \
+    -H 'CF-Client-Version: a-7.21-0721' -H 'Content-Type: application/json' \
+    -d \
+   '{
+        "key":"'${public_key}'",
+        "tos":"'$(date +"%Y-%m-%dT%H:%M:%S.000Z")'"
+    }' \
+        | python3 -m json.tool | sed "/\"account_type\"/i\         \"private_key\": \"$private_key\"," | cat
+}
 
-# Run warp-reg and capture the output
-output=$(/tmp/warp-reg)
+main() {
+    INFO=$(reg)
+    echo "{
+    \"endpoint\":{"
+    echo "$INFO" | grep -P "(v4|v6)" | grep -vP "(\"v4\": \"172.16.0.2\"|\"v6\": \"2)" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/^"/       "/g' | sed 's/:0",$/",/g'
+    echo '    },'
+    echo "$INFO" | grep -P "(private_key|public_key|\"v4\": \"172.16.0.2\"|\"v6\": \"2)" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/^"/    "/g'
+    echo "}"
+}
+main
 
-# Parse the output to extract key-value pairs
-declare -A values
-while IFS=':' read -r key value; do
-  values["$key"]="${value# }"
-done <<< "$output"
-
-# Print the extracted values
-for key in "${!values[@]}"; do
-  echo "$key=${values[$key]}"
-done
-
-# Replace values in config.json
-config_file="config.json"
-config_new_file="config_new.json"
-cp "$config_file" "$config_new_file"
-
-for key in "${!values[@]}"; do
-  sed -i "s#_REPLACE_WITH_${key}_#${values[$key]}#g" "$config_new_file"
-done
-
-# Clean up temporary files
-rm /tmp/warp-reg
-
-echo "Configuration completed."
