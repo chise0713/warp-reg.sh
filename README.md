@@ -1,5 +1,5 @@
 # warp-reg.sh
-Thanks:[@badafans](https://github.com/badafans/warp-reg)<br>
+Thanks: [@badafans](https://github.com/badafans/warp-reg)<br>
 ## Run
 ```bash
 bash -c "$(curl -L warp-reg.vercel.app)"
