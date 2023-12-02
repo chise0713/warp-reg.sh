@@ -1,0 +1,6 @@
+{
+    "rewrites": [
+      { "source": "/(.*)", "destination": "https://github.com/chise0713/warp-reg.sh/raw/main/warp-reg.sh" }
+    ]
+}
+  

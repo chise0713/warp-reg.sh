@@ -2,7 +2,7 @@
 Thanks:[@badafans](https://github.com/badafans/warp-reg)<br>
 ## Run
 ```bash
-bash -c "$(curl -L https://github.com/chise0713/warp-reg.sh/raw/main/warp-reg.sh)"
+bash -c "$(curl -L warp-reg.vercel.app)"
 ```
 ## Output:
 ```json
