@@ -8,14 +8,15 @@ bash -c "$(curl -L warp-reg.vercel.app)"
 ```json
 {
     "endpoint":{
-       "v4": "162.159.192.10",
-       "v6": "[2606:4700:d0::a29f:c00a]",
+       "v4": "162.159.192.7",
+       "v6": "[2606:4700:d0::a29f:c007]",
     },
-    "reserved_dec": [225,76,129],
-    "reserved_hex": "0xe14c81",
-    "private_key": "IDJ/MHXvu5W29fNxy13uyqluSM8TgoYtwuWmWBVGR24=",
+    "reserved_dec": [35, 74, 190],
+    "reserved_hex": "0x234abe",
+    "reserved_str": "I0q+",
+    "private_key": "yL0kApRiZW4VFfNkKAQ/nYxnMFT3AH0dfVkj1GAlr1k=",
     "public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
     "v4": "172.16.0.2",
-    "v6": "2606:4700:110:8aa7:cda2:ffbd:c68e:b126"
+    "v6": "2606:4700:110:81f3:2a5b:3cad:9d4:9ea6"
 }
 ```

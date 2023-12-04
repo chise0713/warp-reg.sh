@@ -60,22 +60,24 @@ reg() {
 }
 
 reservd() {
-    client_id=$(echo "$warp_info" | grep 'client_id' | cut -d\" -f4)
-    reserved_hex=$(echo "$client_id" | base64 -d | xxd -p)
+    reserved_str=$(echo "$warp_info" | grep 'client_id' | cut -d\" -f4)
+    reserved_hex=$(echo "$reserved_str" | base64 -d | xxd -p)
     reserved_dec=$(echo "$reserved_hex" | fold -w2 | while read HEX; do printf '%d ' "0x${HEX}"; done | awk '{print "["$1", "$2", "$3"]"}')
     echo -e "{\n    \"reserved_dec\": $reserved_dec,"
     echo -e "    \"reserved_hex\": \"0x$reserved_hex\","
-    echo -e "    \"client_id\": \"$client_id\"\n}"
+    echo -e "    \"reserved_str\": \"$reserved_str\"\n}"
 }
+
 format (){
     echo "{
     \"endpoint\":{"
     echo "$warp_info" | grep -P "(v4|v6)" | grep -vP "(\"v4\": \"172.16.0.2\"|\"v6\": \"2)" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/^"/       "/g' | sed 's/:0",$/",/g'
     echo '    },'
-    echo "$warp_reservd" | grep -P "reserved" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/:\[/: \[/g' | sed 's/^"/    "/g'
+    echo "$warp_reservd" | grep -P "reserved" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/:\[/: \[/g' | sed 's/\([0-9]\+\),\([0-9]\+\),\([0-9]\+\)/\1, \2, \3/' | sed 's/^"/    "/g' | sed 's/"$/",/g'
     echo "$warp_info" | grep -P "(private_key|public_key|\"v4\": \"172.16.0.2\"|\"v6\": \"2)" | sed "s/ //g" | sed 's/:"/: "/g' | sed 's/^"/    "/g'
     echo "}"
 }
+
 main() {
     package_manager
     install_software 'wireguard-tools' 'wg'
