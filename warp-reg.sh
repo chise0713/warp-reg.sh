@@ -37,8 +37,10 @@ format() {
 }
 
 get-wgg-go() {
-	curl -o /tmp/wgg-go -sL https://github.com/chise0713/warp-reg.sh/blob/main/wgg-go/wgg-go?raw=true
-	curl -o /tmp/wgg-go.sha256sum -sL https://github.com/chise0713/warp-reg.sh/blob/main/wgg-go/wgg-go.sha256sum?raw=true
+	curl -o /tmp/wgg-go -#L warp-reg.vercel.app/wgg-go &
+    local pid=$!
+	curl -o /tmp/wgg-go.sha256sum -#L warp-reg.vercel.app/wgg-go.sha256sum &
+    wait $! $pid
 	local EXPECT_HASH=$(cat "/tmp/wgg-go.sha256sum" | awk '{print $1}')
 	local ACTUAL_HASH=$(sha256sum "/tmp/wgg-go" | awk '{print $1}')
 	if ! [[ $ACTUAL_HASH == $EXPECT_HASH ]];then
