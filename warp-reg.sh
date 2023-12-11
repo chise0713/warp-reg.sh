@@ -48,11 +48,9 @@ install_software() {
 
 reg() {
     set -e
-    pipe=/tmp/warp-reg.pipe
-    rm $pipe -rf && mkfifo $pipe
-    output=$(/tmp/wgg-go)
-    private_key=$(echo "$output"|grep 'priv:'| sed 's/priv: //g')
-    public_key=$(echo "$output"|grep 'pub:'| sed 's/pub: //g')
+    keypair=$(openssl genpkey -algorithm X25519|openssl pkey -text -noout)
+    private_key=$(echo "$keypair" | awk '/priv:/{flag=1; next} /pub:/{flag=0} flag' | tr -d '[:space:]' | xxd -r -p | base64)
+    public_key=$(echo "$keypair" | awk '/pub:/{flag=1} flag' | tr -d '[:space:]' | xxd -r -p | base64)
     curl -X POST 'https://api.cloudflareclient.com/v0a2158/reg' -sL --tlsv1.3 \
     -H 'CF-Client-Version: a-7.21-0721' -H 'Content-Type: application/json' \
     -d \
@@ -83,26 +81,10 @@ format() {
     echo "}"
 }
 
-get-wgg-go() {
-	curl -o /tmp/wgg-go -sL warp-reg.vercel.app/wgg-go \
-	--next -o /tmp/wgg-go.sha256sum -sL warp-reg.vercel.app/wgg-go.sha256sum &
-    wait $!
-	local EXPECT_HASH=$(cat "/tmp/wgg-go.sha256sum" | awk '{print $1}')
-	local ACTUAL_HASH=$(sha256sum "/tmp/wgg-go" | awk '{print $1}')
-	if ! [[ $ACTUAL_HASH == $EXPECT_HASH ]];then
-	    echo -e "${ERROR}ERROR:${END} sha256sum Failed.\nRemoving tmpfiles\nExiting."
-	    rm /tmp/wgg-go /tmp/wgg-go.sha256sum -f
-	    exit 1
-	fi
-	chmod +x /tmp/wgg-go
-}
-
 main() {
     package_manager
     install_software "xxd" "xxd"
     install_software "python3" "python3"
-	get-wgg-go
-	sleep 5 && rm /tmp/wgg-go /tmp/wgg-go.sha256sum -f &
     warp_info=$(reg) ; exit_code=$?
     if [[ $exit_code != 0 ]];then
         echo "$warp_info"

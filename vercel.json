@@ -1,7 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/wgg-go", "destination": "https://github.com/chise0713/warp-reg.sh/raw/wgg-go/wgg-go" },
-    { "source": "/wgg-go.sha256sum", "destination": "https://github.com/chise0713/warp-reg.sh/raw/wgg-go/wgg-go.sha256sum" },
-    { "source": "/(.*)", "destination": "https://github.com/chise0713/warp-reg.sh/raw/master/warp-reg.sh" }
-  ]
-}
