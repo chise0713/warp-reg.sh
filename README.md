@@ -3,7 +3,7 @@ This is a Fork of [badafans/warp-reg`fd562791`#L185-L198](https://github.com/bad
 Thank you! [@badafans](https://github.com/badafans/)
 ## Build
 ```bash
-go build -ldflags="-s -w" -trimpath
+go build -ldflags="-s -w -buildid=" -trimpath
 ```
 ## Output:
 ```

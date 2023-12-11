@@ -11,17 +11,20 @@ import (
 )
 
 func main() {
-	var priv, pub [32]byte
+	var priv, pub []byte
+	var err error
 
-	if _, err := rand.Read(priv[:]); err != nil {
-		fmt.Printf("err: %v\n", err)
-		return
+	priv = make([]byte, curve25519.ScalarSize)
+	if _, err = rand.Read(priv); err != nil {
+		println(err.Error())
 	}
 
 	priv[0] &= 248
 	priv[31] &= 127 | 64
 
-	curve25519.ScalarBaseMult(&pub, &priv)
+	if pub, err = curve25519.X25519(priv, curve25519.Basepoint); err != nil {
+		println(err.Error())
+	}
 
 	fmt.Printf("priv: %s\n", base64.StdEncoding.EncodeToString(priv[:]))
 	fmt.Printf("pub: %s\n", base64.StdEncoding.EncodeToString(pub[:]))
